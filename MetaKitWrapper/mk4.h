@@ -1035,7 +1035,7 @@ public:
   c4_BytesRef& operator= (const c4_Bytes&);
 
       /// Fetch data from the memo field, up to end if length is zero
-  c4_Bytes Access(t4_i32, int =0) const;
+  c4_Bytes Access(t4_i32 off_, int len_ = 0, bool noCopy_ = true) const;
       /// Store data, resize by diff_ bytes, return true if successful
   bool Modify(const c4_Bytes&, t4_i32, int =0) const;
 };

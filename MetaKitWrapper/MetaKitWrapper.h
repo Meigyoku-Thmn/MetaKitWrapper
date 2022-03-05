@@ -8,7 +8,8 @@
 //#include <string>
 //#include <cstring>
 //#include "string.h"
-#include <atlstr.h> 
+#include <atlstr.h>
+#include <cstdint>
 
 #ifndef VGMAXBUF
   #define VGMAXBUF 1000
@@ -49,72 +50,82 @@
 #define DELETEANDNULLALL(a) if (a!=NULL) {delete [] a; a=NULL;}
 
 using namespace System;
+using namespace System::Collections::Generic;
 
 namespace MetaKitWrapper
 {
 
-	public class MetaKitManager
-	{
-	private:
-		bool _DbOpen;
-		char* _FileName;
-		c4_Storage* _Database;
-		c4_View m_ActiveViewHandle[VGMAXOPEN];
-		char* m_ptrActiveTableName[VGMAXOPEN];
-		char* m_ptrActiveTableStructure[VGMAXOPEN];
-		int _Views;
+    public class MetaKitManager
+    {
+    private:
+        bool _DbOpen;
+        char* _FileName;
+        c4_Storage* _Database;
+        c4_View m_ActiveViewHandle[VGMAXOPEN];
+        char* m_ptrActiveTableName[VGMAXOPEN] = { 0 };
+        char* m_ptrActiveTableStructure[VGMAXOPEN] = { 0 };
+        int _Views;
 
-	public:
+    public:
 
-		MetaKitManager();
+        MetaKitManager();
 
-		bool OpenDB(char* filename);
-		bool CloseDB();
+        bool OpenDB(char* filename);
+        bool CloseDB();
 
-		bool IsOpen();
-
-
-		int GetDataItem(const int ViewNum, const long RowNum, const int ColNum, char* FieldType,
-			CString* StrRet, long* LongOrIntRet, double* DoubleOrFloatRet);
-
-		int GetInt(const int ViewNum, const long RowNum, const int ColNum, int* RetVal);
-		int GetString(const int ViewNum, const long RowNum, const int ColNum,  CString& RetVal);
-		int GetFloat(const int ViewNum, const long RowNum, const int ColNum,  float* RetVal);
-		int GetDouble(const int ViewNum, const long RowNum, const int ColNum,  double* RetVal);
-		int GetLong(const int ViewNum, const long RowNum, const int ColNum, long* RetVal);
-
-		int StringToChar(const CString StringToConvert, char** ptrCharArray);
-
-		int OpenAView(CString sAViewName);
-
-		int GetRowCount(int ViewNum);
-	};
+        bool IsOpen();
 
 
-	public ref class MetaKit
-	{
-	private:
-		char* _FileName;
-		MetaKitManager* _Manager;
+        int GetDataItem(const int ViewNum, const long RowNum, const int ColNum, char* FieldType,
+            CString* StrRet, long* LongOrIntRet, double* DoubleOrFloatRet);
 
-	public:
+        int FindBinaryByKey(const int viewNum, const uint64_t key, const int keyColNum, const int colNum,
+            array<Byte>^ %output);
 
-		~MetaKit();
+        int GetKeyBinaryValuePair(const int viewNum, const int rowNum, const int keyColNum, const int valColNum, 
+            uint64_t &keyOutput, array<Byte>^ %valOutput);
 
-		bool OpenDB(String^ filename);
-		bool CloseDB();
+        int GetInt(const int ViewNum, const long RowNum, const int ColNum, int* RetVal);
+        int GetString(const int ViewNum, const long RowNum, const int ColNum,  CString& RetVal);
+        int GetFloat(const int ViewNum, const long RowNum, const int ColNum,  float* RetVal);
+        int GetDouble(const int ViewNum, const long RowNum, const int ColNum,  double* RetVal);
+        int GetLong(const int ViewNum, const long RowNum, const int ColNum, long* RetVal);
 
-		String^ GetString(int viewNum, int rowNum, int columnNum);
-		int GetInt(int viewNum, int rowNum, int columnNum);
-		long GetLong(int viewNum, int rowNum, int columnNum);
-		float GetFloat(int viewNum, int rowNum, int columnNum);
-		double GetDouble(int viewNum, int rowNum, int columnNum);
+        int StringToChar(const CString StringToConvert, char** ptrCharArray);
 
-		int GetDataItem(int ViewNum, int RowNum, int ColNum, String^& FieldType,
-			String^& Str, int& LongOrIntRet, double& DoubleOrFloatRet);
+        int OpenAView(CString sAViewName);
 
-		int OpenView(String^ viewName);
+        int GetRowCount(int ViewNum);
+    };
 
-		int GetRowCount(int viewNum);
-	};
+
+    public ref class MetaKit
+    {
+    private:
+        char* _FileName;
+        MetaKitManager* _Manager;
+
+    public:
+
+        ~MetaKit();
+
+        bool OpenDB(String^ filename);
+        bool CloseDB();
+
+        array<Byte>^ FindBinaryByKey(int viewNum, uint64_t key, int keyColNum, int colNum);
+        KeyValuePair<uint64_t, array<Byte>^> GetKeyBinaryValuePair(int viewNum, int rowNum, int keyColNum, int valColNum);
+
+        String^ GetString(int viewNum, int rowNum, int columnNum);
+        int GetInt(int viewNum, int rowNum, int columnNum);
+        long GetLong(int viewNum, int rowNum, int columnNum);
+        float GetFloat(int viewNum, int rowNum, int columnNum);
+        double GetDouble(int viewNum, int rowNum, int columnNum);
+
+        int GetDataItem(int ViewNum, int RowNum, int ColNum, String^& FieldType,
+            String^& Str, int& LongOrIntRet, double& DoubleOrFloatRet);
+
+        int OpenView(String^ viewName);
+
+        int GetRowCount(int viewNum);
+    };
 }

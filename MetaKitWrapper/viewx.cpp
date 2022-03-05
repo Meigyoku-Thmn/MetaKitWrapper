@@ -484,8 +484,8 @@ c4_BytesRef &c4_BytesRef::operator = (const c4_Bytes &value_) {
 }
 
 
-/*
-c4_Bytes c4_BytesRef::Access(t4_i32 off_, int len_, bool noCopy_)const {
+
+c4_Bytes c4_BytesRef::Access(t4_i32 off_, int len_, bool noCopy_) const {
   c4_Bytes &buffer = _cursor._seq->Buffer();
 
   int colNum = _cursor._seq->PropIndex(_property.GetId());
@@ -525,12 +525,6 @@ c4_Bytes c4_BytesRef::Access(t4_i32 off_, int len_, bool noCopy_)const {
 
   return c4_Bytes();
 }
-
-*/
-
-
-
-
 
 bool c4_BytesRef::Modify(const c4_Bytes &buf_, t4_i32 off_, int diff_)const {
   int colNum = _cursor._seq->PropIndex(_property.GetId());
